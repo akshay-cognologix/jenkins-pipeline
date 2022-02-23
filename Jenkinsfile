@@ -17,8 +17,7 @@ pipeline {
         }
         sh '''
           ls -lRth; pwd
-          find /home/jenkins/ -name "Cognologix-AISD-Airbyte"
-          cd innive-repo/Cognologix-AISD-Airbyte/innive_airflow
+          cd innive-repo/innive_airflow
           sh buildImage.sh edfi-airflow:2.2.3-v${BUILD_NUMBER}
           docker images
           cd -
