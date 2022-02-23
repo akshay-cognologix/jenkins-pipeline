@@ -17,22 +17,28 @@ pipeline {
       }
     }
     stage('Create Docker image') {
-      container('docker') {
-          sh """
-            cd innive-repo/Cognologix-AISD-Airbyte/innive_airflow
-            sh buildImage.sh edfi-airflow:2.2.3-v${BUILD_NUMBER}
-            docker images
-            """
-      }
+      steps {
+        container('docker') {
+            sh """
+              cd innive-repo/Cognologix-AISD-Airbyte/innive_airflow
+              sh buildImage.sh edfi-airflow:2.2.3-v${BUILD_NUMBER}
+              docker images
+              """
+        }
+      } 
     }
     stage('Run kubectl') {
-      container('kubectl') {
-        sh "kubectl get pods -n jenkins"
+      steps {
+        container('kubectl') {
+          sh "kubectl get pods -n jenkins"
+        }
       }
     }
     stage('Run helm') {
-      container('helm') {
-        sh "helm list"
+      steps {
+        container('helm') {
+          sh "helm list"
+        }
       }
     }
  }
