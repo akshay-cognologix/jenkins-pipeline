@@ -52,10 +52,10 @@ spec:
       mountPath: /var/run/docker.sock
     - mountPath: /home/jenkins/agent
       name: workspace-volume
-  dnsPolicy: "None"
-  dnsConfig:
-    nameservers:
-      - 8.8.8.8
+  #dnsPolicy: "None"
+  #dnsConfig:
+  #  nameservers:
+  #    - 8.8.8.8
   volumes:
   - hostPath:
       path: /var/run/docker.sock
