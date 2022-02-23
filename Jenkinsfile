@@ -7,17 +7,24 @@ pipeline {
     }
   }
  stages {
-   git branch: 'main', credentialsId: 'github-creds', url: 'git@github.com:Cognologix/Cognologix-AISD-Airbyte.git'
+    stage('Clone innive repository') {
+      steps {
+        dir ('innive-repo') {
+          git branch: 'main',
+            credentialsId: 'github-creds',
+            url: 'git@github.com:Cognologix/Cognologix-AISD-Airbyte.git'
+        }
+      }
+    }
     stage('Create Docker image') {
       container('docker') {
           sh """
-            cd innive_airflow
+            cd innive-repo/Cognologix-AISD-Airbyte/innive_airflow
             sh buildImage.sh edfi-airflow:2.2.3-v${BUILD_NUMBER}
             docker images
             """
       }
     }
-   git branch: 'main', credentialsId: 'github-creds', url: 'git@github.com:Cognologix/Cognologix-AISD-Airbyte.git'
     stage('Run kubectl') {
       container('kubectl') {
         sh "kubectl get pods -n jenkins"
