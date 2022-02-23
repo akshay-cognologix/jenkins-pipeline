@@ -9,14 +9,14 @@ pipeline {
  stages {
     stage('Clone innive repository and build image') {
       steps {
-        sh 'mkdir innive-repo; ls -lh'
+        sh 'mkdir innive-repo; chmod 1000:1000 innive-repo'
         dir ('innive-repo') {
           git branch: 'main',
             credentialsId: 'github-creds',
             url: 'git@github.com:Cognologix/Cognologix-AISD-Airbyte.git'
         }
         sh '''
-          ls -lRth; pwd
+          chmod 1000:1000 -R innive-repo
           cd innive-repo/innive_airflow
           sh buildImage.sh edfi-airflow:2.2.3-v${BUILD_NUMBER}
           docker images

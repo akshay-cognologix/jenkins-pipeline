@@ -6,9 +6,9 @@ metadata:
     jenkins/jenkins-jenkins-agent: "true"
   namespace: jenkins
 spec:
-  securityContext:
-    runAsUser: 1000
-    runAsGroup: 1000      
+  #securityContext:
+   # runAsUser: 1000
+    #runAsGroup: 1000      
   containers:
   - name: docker
     image: docker
