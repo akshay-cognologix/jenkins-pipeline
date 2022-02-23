@@ -9,8 +9,8 @@ pipeline {
  stages {
     stage('Clone innive repository') {
       steps {
-        sh 'mkdir /home/jenkins/agent/workspace/innive-repo'
-        dir ('/home/jenkins/agent/workspace/innive-repo') {
+        sh 'mkdir /home/jenkins/agent/workspace/test-airflow2/innive-repo'
+        dir ('/home/jenkins/agent/workspace/test-airflow2/innive-repo') {
           git branch: 'main',
             credentialsId: 'github-creds',
             url: 'git@github.com:Cognologix/Cognologix-AISD-Airbyte.git'
@@ -21,7 +21,7 @@ pipeline {
       steps {
         container('docker') {
             sh """
-              cd /home/jenkins/agent/workspace/innive-repo/Cognologix-AISD-Airbyte/innive_airflow
+              cd /home/jenkins/agent/workspace/test-airflow2/innive-repo/Cognologix-AISD-Airbyte/innive_airflow
               sh buildImage.sh edfi-airflow:2.2.3-v${BUILD_NUMBER}
               docker images
               cd -
