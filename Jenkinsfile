@@ -3,7 +3,7 @@ pipeline {
   agent {
     kubernetes {
       defaultContainer 'docker'
-      yamlFile 'resources/agentPodTemplate.yaml'
+      yamlFile 'pod-template/podtemplate.yaml'
     }
   }
  stages {
