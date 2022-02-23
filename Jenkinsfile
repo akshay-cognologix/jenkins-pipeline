@@ -9,7 +9,7 @@ pipeline {
  stages {
     stage('Clone innive repository') {
       steps {
-        sh 'mkdir /home/jenkins/agent/workspace/test-airflow2/innive-repo'
+        sh 'mkdir /home/jenkins/agent/workspace/test-airflow2/innive-repo; ls -lh /home/jenkins/agent/workspace/test-airflow2; chmod -R 777 /home/jenkins/agent/workspace/test-airflow2'
         dir ('/home/jenkins/agent/workspace/test-airflow2/innive-repo') {
           git branch: 'main',
             credentialsId: 'github-creds',
