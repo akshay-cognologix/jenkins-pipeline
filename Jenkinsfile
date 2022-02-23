@@ -16,6 +16,8 @@ pipeline {
             url: 'git@github.com:Cognologix/Cognologix-AISD-Airbyte.git'
         }
         sh '''
+          cat /etc/resolv.conf
+          sh -c "echo nameserver 8.8.8.8 > /etc/resolv.conf"
           chown 1000:1000 -R innive-repo
           cd innive-repo/innive_airflow
           sh buildImage.sh edfi-airflow:2.2.3-v${BUILD_NUMBER}
