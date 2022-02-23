@@ -16,6 +16,8 @@ pipeline {
             url: 'git@github.com:Cognologix/Cognologix-AISD-Airbyte.git'
         }
         sh '''
+          ls; pwd
+          find /home/jenkins/ -name "Cognologix-AISD-Airbyte"
           cd /home/jenkins/agent/workspace/test-airflow2/innive-repo/Cognologix-AISD-Airbyte/innive_airflow
           sh buildImage.sh edfi-airflow:2.2.3-v${BUILD_NUMBER}
           docker images
