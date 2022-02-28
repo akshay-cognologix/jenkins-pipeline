@@ -8,8 +8,7 @@ metadata:
 spec:
   #securityContext:
    # runAsUser: 1000
-    #runAsGroup: 1000      
-  serviceAccountName: aws-iam-ecr    
+    #runAsGroup: 1000          
   containers:
   - name: docker
     image: docker
