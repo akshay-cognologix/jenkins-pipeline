@@ -18,12 +18,11 @@ pipeline {
         sh '''
         dockerConfig=\${DOCKER_CONFIG:-~/.docker}
         [ -d \${dockerConfig} ] && echo "Docker directory Exists" || mkdir -p \${dockerConfig}
-        echo '{"credsStore":"ecr-login"}' > \${dockerConfig}/config.json
+        echo '{ "credsStore" : "ecr-login" }' > \${dockerConfig}/config.json
+        chmod 600 \${dockerConfig}/config.json
         '''        
         sh '''
-          dockerConfig=\${DOCKER_CONFIG:-~/.docker}
-          [ -d \${dockerConfig} ] && echo "Docker directory Exists" || mkdir -p \${dockerConfig}
-          echo '{ "credsStore" : "ecr-login" }' > \${dockerConfig}/config.json        
+          cat \${dockerConfig}/config.json
           chown 1000:1000 -R innive-repo
           cd innive-repo/innive_airflow
           rm -rf innive_dbt/target/* innive_dbt/data/* innive_dbt/logs/* innive_dbt/dbt_packages/*

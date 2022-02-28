@@ -16,9 +16,11 @@ spec:
     imagePullPolicy: IfNotPresent
     env:
     - name: AWS_EC2_METADATA_DISABLED
-      value: true
+      value: "true"
     - name: AWS_SDK_LOAD_CONFIG
-      value: true    
+      value: "true"
+    securityContext:
+      privileged: true      
     terminationMessagePath: /dev/termination-log
     terminationMessagePolicy: File
     command:
