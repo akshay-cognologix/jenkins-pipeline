@@ -9,19 +9,23 @@ pipeline {
  stages {
     stage('Clone innive repository and build image') {
       steps {
-        sh 'mkdir innive-repo; chown 1000:1000 innive-repo'
+        sh 'mkdir innive-repo'
         dir ('innive-repo') {
           git branch: 'main',
             credentialsId: 'github-creds',
             url: 'git@github.com:Cognologix/Cognologix-AISD-Airbyte.git'
         }
         sh '''
-          cat /etc/resolv.conf
-          sh -c "echo nameserver 8.8.8.8 > /etc/resolv.conf"
-          chown 1000:1000 -R innive-repo
+        dockerConfig=\${DOCKER_CONFIG:-~/.docker}
+        [ -d \${dockerConfig} ] && echo "Docker directory Exists" || mkdir -p \${dockerConfig}
+        echo '{"credsStore":"ecr-login"}' > \${dockerConfig}/config.json
+        '''        
+        sh '''
           cd innive-repo/innive_airflow
-          sh buildImage.sh edfi-airflow:2.2.3-v${BUILD_NUMBER}
+          rm -rf innive_dbt/target/* innive_dbt/data/* innive_dbt/logs/* innive_dbt/dbt_packages/*
+          docker build . --network=host -f Dockerfile -t 516250856443.dkr.ecr.us-east-2.amazonaws.com/jenkins-airflow:airflow-edfi-v${BUILD_NUMBER} 
           docker images
+          docker push 516250856443.dkr.ecr.us-east-2.amazonaws.com/jenkins-airflow:airflow-edfi-v${BUILD_NUMBER}
           cd -
           '''
       }
