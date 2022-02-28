@@ -14,6 +14,11 @@ spec:
   - name: docker
     image: 516250856443.dkr.ecr.us-east-2.amazonaws.com/jenkins-airflow:kube-aws-cli-tools
     imagePullPolicy: IfNotPresent
+    env:
+    - name: AWS_EC2_METADATA_DISABLED
+      value: true
+    - name: AWS_SDK_LOAD_CONFIG
+      value: true    
     terminationMessagePath: /dev/termination-log
     terminationMessagePolicy: File
     command:

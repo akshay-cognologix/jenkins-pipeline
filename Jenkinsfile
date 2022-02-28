@@ -23,13 +23,15 @@ pipeline {
         sh '''
           dockerConfig=\${DOCKER_CONFIG:-~/.docker}
           [ -d \${dockerConfig} ] && echo "Docker directory Exists" || mkdir -p \${dockerConfig}
-          echo '{"credsStore":"ecr-login"}' > \${dockerConfig}/config.json        
+          echo '{ "credsStore" : "ecr-login" }' > \${dockerConfig}/config.json        
           chown 1000:1000 -R innive-repo
           cd innive-repo/innive_airflow
           rm -rf innive_dbt/target/* innive_dbt/data/* innive_dbt/logs/* innive_dbt/dbt_packages/*
-          docker build . --network=host -f Dockerfile -t 516250856443.dkr.ecr.us-east-2.amazonaws.com/jenkins-airflow:airflow-edfi-v${BUILD_NUMBER} 
+          #docker build . --network=host -f Dockerfile -t 516250856443.dkr.ecr.us-east-2.amazonaws.com/jenkins-airflow:airflow-edfi-v${BUILD_NUMBER} 
           docker images
-          docker push 516250856443.dkr.ecr.us-east-2.amazonaws.com/jenkins-airflow:airflow-edfi-v${BUILD_NUMBER}
+          whoami
+          #docker push 516250856443.dkr.ecr.us-east-2.amazonaws.com/jenkins-airflow:airflow-edfi-v${BUILD_NUMBER}
+          docker push 516250856443.dkr.ecr.us-east-2.amazonaws.com/jenkins-airflow:airflow-edfi-v24
           cd -
           '''
       }
