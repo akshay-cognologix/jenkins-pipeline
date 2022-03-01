@@ -55,7 +55,7 @@ pipeline {
         sh '''
           chown 1000:1000 -R airflow-charts
           cd airflow-charts/
-          helm install -n test-airflow ./airflow-charts airflow-test1 --set  defaultAirflowTag=airflow-edfi-v${BUILD_NUMBER} 
+          helm install -f values.yaml --set  defaultAirflowTag=airflow-edfi-v${BUILD_NUMBER} -n test-airflow  airflow-test1  .
           helm ls
           cd -
           '''
