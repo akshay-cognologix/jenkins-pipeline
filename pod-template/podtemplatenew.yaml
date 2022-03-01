@@ -13,7 +13,7 @@ spec:
   containers:
   - name: docker
     image: 516250856443.dkr.ecr.us-east-2.amazonaws.com/jenkins-airflow:kube-aws-cli-tools
-    imagePullPolicy: IfNotPresent
+    imagePullPolicy: Always
     env:
     - name: AWS_EC2_METADATA_DISABLED
       value: "true"

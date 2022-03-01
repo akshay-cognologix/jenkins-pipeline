@@ -19,7 +19,6 @@ pipeline {
         dockerConfig=\${DOCKER_CONFIG:-~/.docker}
         [ -d \${dockerConfig} ] && echo "Docker directory Exists" || mkdir -p \${dockerConfig}
         echo '{ "credsStore" : "ecr-login" }' > \${dockerConfig}/config.json
-        chmod 600 \${dockerConfig}/config.json
         '''        
         sh '''
           cat /root/.docker/config.json
@@ -28,9 +27,7 @@ pipeline {
           rm -rf innive_dbt/target/* innive_dbt/data/* innive_dbt/logs/* innive_dbt/dbt_packages/*
           docker build . --network=host -f Dockerfile -t 516250856443.dkr.ecr.us-east-2.amazonaws.com/jenkins-airflow:airflow-edfi-v${BUILD_NUMBER} 
           docker images
-          whoami
           docker push 516250856443.dkr.ecr.us-east-2.amazonaws.com/jenkins-airflow:airflow-edfi-v${BUILD_NUMBER}
-          #docker push 516250856443.dkr.ecr.us-east-2.amazonaws.com/jenkins-airflow:airflow-edfi-v24
           cd -
           '''
       }
@@ -47,19 +44,34 @@ pipeline {
         }
       } 
     }*/
-    stage('Run kubectl') {
+   /* stage('Deploy airflow') {
       steps {
-        container('kubectl') {
-          sh "kubectl get pods -n jenkins"
-        }
+        sh 'mkdir airflow-charts; chown 1000:1000 airflow-charts'
+        dir ('airflow-charts') {
+          git branch: 'jenkins-env',
+            credentialsId: 'github-creds',
+            url: 'git@github.com:Cognologix/airflow-helm-charts.git'
+        }    
+        sh '''
+          chown 1000:1000 -R airflow-charts
+          cd helm-charts/
+          #helm install -n airflow-test ./airflow-charts airflow-test1 --set  defaultAirflowTag=airflow-edfi-v${BUILD_NUMBER} 
+          helm ls
+          cd -
+          '''
       }
-    }
-    stage('Run helm') {
+    }*/
+/*    stage('Run helm') {
       steps {
         container('helm') {
           sh "helm list"
         }
       }
-    }
+    }*/
+    stage('Run kubectl') {
+      steps {
+         sh "kubectl get pods -n jenkins"
+      }
+    }    
  }
 }
