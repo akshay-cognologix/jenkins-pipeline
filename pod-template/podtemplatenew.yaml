@@ -9,7 +9,7 @@ spec:
   #securityContext:
    # runAsUser: 1000
     #runAsGroup: 1000      
-  serviceAccountName: aws-iam-ecr    
+  serviceAccountName: jenkins    
   containers:
   - name: docker
     image: 516250856443.dkr.ecr.us-east-2.amazonaws.com/jenkins-airflow:kube-aws-cli-tools
