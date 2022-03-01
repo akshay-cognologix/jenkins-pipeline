@@ -44,7 +44,7 @@ pipeline {
         }
       } 
     }*/
-   /* stage('Deploy airflow') {
+   stage('Deploy airflow') {
       steps {
         sh 'mkdir airflow-charts; chown 1000:1000 airflow-charts'
         dir ('airflow-charts') {
@@ -55,12 +55,12 @@ pipeline {
         sh '''
           chown 1000:1000 -R airflow-charts
           cd helm-charts/
-          #helm install -n airflow-test ./airflow-charts airflow-test1 --set  defaultAirflowTag=airflow-edfi-v${BUILD_NUMBER} 
+          helm install -n test-airflow ./airflow-charts airflow-test1 --set  defaultAirflowTag=airflow-edfi-v${BUILD_NUMBER} 
           helm ls
           cd -
           '''
       }
-    }*/
+    }
 /*    stage('Run helm') {
       steps {
         container('helm') {
@@ -70,7 +70,7 @@ pipeline {
     }*/
     stage('Run kubectl') {
       steps {
-         sh "kubectl get pods -n jenkins"
+         sh "kubectl get pods -n test-airflow"
       }
     }    
  }
