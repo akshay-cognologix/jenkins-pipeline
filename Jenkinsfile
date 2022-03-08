@@ -48,8 +48,7 @@ pipeline {
           chown 1000:1000 -R airflow-charts
           cd airflow-charts/
           sh ~/img-tag.sh
-      	  echo ${env.IMG_TAG}
-	        #echo ${IMG_TAG}
+	        echo ${IMG_TAG}
           #helm upgrade --install -f values.yaml --set  defaultAirflowTag=airflow-edfi-v${IMG_TAG} --set logs.persistence.enabled=false -n test-airflow  airflow-test1  .
           helm ls
           cd -
