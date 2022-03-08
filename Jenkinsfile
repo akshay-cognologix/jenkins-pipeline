@@ -11,7 +11,7 @@ pipeline {
       steps {
         sh 'mkdir innive-repo; chown 1000:1000 innive-repo'
         dir ('innive-repo') {
-          git branch: 'main',
+          git branch: '${REPO_IMG_BRANCH}',
             credentialsId: 'github-creds',
             url: 'git@github.com:Cognologix/Cognologix-AISD-Airbyte.git'
         }
@@ -24,50 +24,36 @@ pipeline {
           cat /root/.docker/config.json
           chown 1000:1000 -R innive-repo
           cd innive-repo/innive_airflow
+          env.IMG_TAG=$(git rev-parse --short=7 HEAD)
           rm -rf innive_dbt/target/* innive_dbt/data/* innive_dbt/logs/* innive_dbt/dbt_packages/*
-          docker build . --network=host -f Dockerfile -t 516250856443.dkr.ecr.us-east-2.amazonaws.com/jenkins-airflow:airflow-edfi-v${BUILD_NUMBER} 
+      	  echo ${env.IMG_TAG}
+          #docker build . --network=host -f Dockerfile -t 516250856443.dkr.ecr.us-east-2.amazonaws.com/jenkins-airflow:airflow-edfi-v${env.IMG_TAG} 
           docker images
-          docker push 516250856443.dkr.ecr.us-east-2.amazonaws.com/jenkins-airflow:airflow-edfi-v${BUILD_NUMBER}
+          #docker push 516250856443.dkr.ecr.us-east-2.amazonaws.com/jenkins-airflow:airflow-edfi-v${env.IMG_TAG}
           cd -
           '''
       }
     }
-/*    stage('Create Docker image') {
-      steps {
-        container('docker') {
-            sh """
-              cd /home/jenkins/agent/workspace/test-airflow2/innive-repo/Cognologix-AISD-Airbyte/innive_airflow
-              sh buildImage.sh edfi-airflow:2.2.3-v${BUILD_NUMBER}
-              docker images
-              cd -
-              """
-        }
-      } 
-    }*/
+
    stage('Deploy airflow') {
       steps {
         sh 'mkdir airflow-charts; chown 1000:1000 airflow-charts'
         dir ('airflow-charts') {
-          git branch: 'jenkins-env',
+          git branch: '${REPO_HELM_BRANCH}',
             credentialsId: 'github-creds',
             url: 'git@github.com:Cognologix/airflow-helm-charts.git'
         }    
         sh '''
           chown 1000:1000 -R airflow-charts
           cd airflow-charts/
-          helm install -f values.yaml --set  defaultAirflowTag=airflow-edfi-v${BUILD_NUMBER} -n test-airflow  airflow-test1  .
+	  echo ${env.IMG_TAG}
+          #helm upgrade --install -f values.yaml --set  defaultAirflowTag=airflow-edfi-v${env.IMG_TAG} --set logs.persistence.enabled=false -n test-airflow  airflow-test1  .
           helm ls
           cd -
           '''
       }
     }
-/*    stage('Run helm') {
-      steps {
-        container('helm') {
-          sh "helm list"
-        }
-      }
-    }*/
+
     stage('Run kubectl') {
       steps {
          sh "kubectl get pods -n test-airflow"
