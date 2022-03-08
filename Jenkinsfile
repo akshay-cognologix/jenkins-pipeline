@@ -33,7 +33,10 @@ pipeline {
           #docker push 516250856443.dkr.ecr.us-east-2.amazonaws.com/jenkins-airflow:airflow-edfi-v${IMG_TAG}
           cd -
           '''
-      }
+        script {
+          env.IMG_TAG = "${sh(script:'cd innive-repo/innive_airflow; git rev-parse --short=7 HEAD', returnStdout: true).trim()}" 
+          echo "IMG_TAG = ${env.IMG_TAG}"
+        }
     }
 
    stage('Deploy airflow') {
@@ -47,10 +50,11 @@ pipeline {
         sh '''
           chown 1000:1000 -R airflow-charts
           cd airflow-charts/
-          sh ~/img-tag.sh
+          cat ~/img-tag.sh
 	        echo ${IMG_TAG}
           #helm upgrade --install -f values.yaml --set  defaultAirflowTag=airflow-edfi-v${IMG_TAG} --set logs.persistence.enabled=false -n test-airflow  airflow-test1  .
           helm ls
+          echo ${env.IMG_TAG}
           cd -
           '''
       }
