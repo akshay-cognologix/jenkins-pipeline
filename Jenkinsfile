@@ -24,9 +24,12 @@ pipeline {
           cat /root/.docker/config.json
           chown 1000:1000 -R innive-repo
           cd innive-repo/innive_airflow
-          export IMG_TAG=$(git rev-parse --short=7 HEAD)
+          script {
+            env.IMG_TAG = sh(script:"git rev-parse --short=7 HEAD", returnStdout:true).trim()
+            echo ${env.IMG_TAG}
+          }
           rm -rf innive_dbt/target/* innive_dbt/data/* innive_dbt/logs/* innive_dbt/dbt_packages/*
-      	  echo ${IMG_TAG}
+      	  echo ${env.IMG_TAG}
           #docker build . --network=host -f Dockerfile -t 516250856443.dkr.ecr.us-east-2.amazonaws.com/jenkins-airflow:airflow-edfi-v${IMG_TAG} 
           docker images
           #docker push 516250856443.dkr.ecr.us-east-2.amazonaws.com/jenkins-airflow:airflow-edfi-v${IMG_TAG}
@@ -46,7 +49,8 @@ pipeline {
         sh '''
           chown 1000:1000 -R airflow-charts
           cd airflow-charts/
-	        echo ${IMG_TAG}
+      	  echo ${env.IMG_TAG}
+	        #echo ${IMG_TAG}
           #helm upgrade --install -f values.yaml --set  defaultAirflowTag=airflow-edfi-v${IMG_TAG} --set logs.persistence.enabled=false -n test-airflow  airflow-test1  .
           helm ls
           cd -
