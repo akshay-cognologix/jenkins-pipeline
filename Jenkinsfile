@@ -38,6 +38,7 @@ pipeline {
           echo "IMG_TAG = ${env.IMG_TAG}"
         }
     }
+}
 
    stage('Deploy airflow') {
       steps {
