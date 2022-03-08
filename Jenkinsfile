@@ -24,7 +24,7 @@ pipeline {
           cat /root/.docker/config.json
           chown 1000:1000 -R innive-repo
           cd innive-repo/innive_airflow
-          env.IMG_TAG=$(git rev-parse --short=7 HEAD)
+          echo 'env.IMG_TAG=$(git rev-parse --short=7 HEAD)'
           rm -rf innive_dbt/target/* innive_dbt/data/* innive_dbt/logs/* innive_dbt/dbt_packages/*
       	  echo ${env.IMG_TAG}
           #docker build . --network=host -f Dockerfile -t 516250856443.dkr.ecr.us-east-2.amazonaws.com/jenkins-airflow:airflow-edfi-v${env.IMG_TAG} 
