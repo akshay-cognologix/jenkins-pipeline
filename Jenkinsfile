@@ -25,7 +25,7 @@ pipeline {
           chown 1000:1000 -R innive-repo
           script {
             cd innive-repo/innive_airflow
-            def env.IMG_TAG= sh(returnStdout: true, script: "git rev-parse --short=7 HEAD").trim()
+            env.IMG_TAG= sh (returnStdout:true, script: "git rev-parse --short=7 HEAD")
             cd -
           }
           cd innive-repo/innive_airflow
