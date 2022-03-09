@@ -26,10 +26,10 @@ pipeline {
           cd innive-repo/innive_airflow
           export IMG_TAG=$(git rev-parse --short=7 HEAD)
           rm -rf innive_dbt/target/* innive_dbt/data/* innive_dbt/logs/* innive_dbt/dbt_packages/*
-      	  echo ${IMG_TAG}
-          #docker build . --network=host -f Dockerfile -t 516250856443.dkr.ecr.us-east-2.amazonaws.com/jenkins-airflow:airflow-edfi-v${IMG_TAG} 
+      	  echo "Your image tag will be ${IMG_TAG}"
+          docker build . --network=host -f Dockerfile -t 516250856443.dkr.ecr.us-east-2.amazonaws.com/jenkins-airflow:airflow-edfi-v${IMG_TAG} 
           docker images
-          #docker push 516250856443.dkr.ecr.us-east-2.amazonaws.com/jenkins-airflow:airflow-edfi-v${IMG_TAG}
+          docker push 516250856443.dkr.ecr.us-east-2.amazonaws.com/jenkins-airflow:airflow-edfi-v${IMG_TAG}
           cd -
           '''
         script {
@@ -50,9 +50,11 @@ pipeline {
         sh '''
           chown 1000:1000 -R airflow-charts
           cd airflow-charts/
-	        echo ${IMG_TAG}
-          #helm upgrade  -f values.yaml --set  defaultAirflowTag=airflow-edfi-v${IMG_TAG} --set logs.persistence.enabled=false -n test-airflow  airflow-test1  .
-          helm ls
+	        echo "You are using 516250856443.dkr.ecr.us-east-2.amazonaws.com/jenkins-airflow:airflow-edfi-v${IMG_TAG} for Airflow Deployment"
+          helm upgrade --install --wait -f values.yaml --set  defaultAirflowTag=airflow-edfi-v${IMG_TAG}  -n ${AIRFLOW_NAMESPACE}  airflow-test1  .
+          helm ls -n ${AIRFLOW_NAMESPACE}
+          export AIRFLOW_UI=$(kubectl get svc --namespace ${AIRFLOW_NAMESPACE} airflow-test1 --template "{{ range (index .status.loadBalancer.ingress 0) }}{{ . }}{{ end }}")
+          echo "Access Airflow UI using ${AIRFLOW_UI}"
           cd -
           '''
       }
@@ -60,7 +62,7 @@ pipeline {
 
     stage('Run kubectl') {
       steps {
-         sh "kubectl get pods -n test-airflow"
+         sh "kubectl get pods -n ${AIRFLOW_NAMESPACE}"
       }
     }    
  }
